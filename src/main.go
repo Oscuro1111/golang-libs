@@ -166,6 +166,7 @@ func main() {
 
 	wg := &sync.WaitGroup{}
 
+	//allocate semeophore
 	resourcePool := NewSemophore(res)
 
 	num := 10
