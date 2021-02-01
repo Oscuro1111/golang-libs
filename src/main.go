@@ -7,11 +7,11 @@ import (
 )
 
 //Sem is the semephore implementaion
-
 var (
 	log = fmt.Println
 )
 
+//Stack data structure not thread safe
 type Stack struct {
 	Top int32
 	Stk []interface{}
@@ -74,7 +74,7 @@ func (sem *Sem) GetResource() (resource interface{}) {
 		sem.lock.L.Lock()
 
 		for sem.counter == 0 {
-
+			log("waiting")
 			sem.lock.Wait()
 
 		}
@@ -121,11 +121,11 @@ type Res struct {
 
 func Work(sem *Sem, wg *sync.WaitGroup) {
 
-	resource, _ := sem.GetResource().(*Res)
+	resource, _ := sem.GetResource().(Res)
 
 	for i := 100; i > 0; i-- {
-		resource.data += 1
-		time.Sleep(1 * time.Millisecond)
+		resource.data++
+		time.Sleep(5 * time.Millisecond)
 	}
 
 	sem.ReleaseResource(resource)
@@ -133,39 +133,43 @@ func Work(sem *Sem, wg *sync.WaitGroup) {
 	return
 }
 
-func main() {
+//NewSemopher  provide instance of new semeophore
+func NewSemophore(res []interface{}) *Sem {
 
-	var res = []*Res{
-		{data: 0},
-		{data: 0},
-		{data: 0},
-		{data: 0},
-	}
-
-	wg := &sync.WaitGroup{}
-
-	var resource [4]interface{}
+	//-------------------------------------------
+	NUM_OF_RESOURCES := int32(len(res))
 
 	var pool = &Pool{
-		Stk: resource[:],
-		Top: -1,
-		Max: int32(len(res)),
-	}
-
-	//Initalizing resource pool
-	for _, val := range res {
-
-		pool.push(val)
+		Stk: res[:],
+		Top: NUM_OF_RESOURCES - 1,
+		Max: NUM_OF_RESOURCES,
 	}
 
 	resourcePool := &Sem{
-		NumResources: 4,
+		NumResources: NUM_OF_RESOURCES,
 		Pool:         pool,
 	}
 
 	resourcePool.Init()
 
+	return resourcePool
+}
+
+func main() {
+
+	var res = []interface{}{
+		Res{data: 0},
+		Res{data: 0},
+		Res{data: 0},
+		Res{data: 0},
+	}
+
+	wg := &sync.WaitGroup{}
+
+	resourcePool := NewSemophore(res)
+
 	num := 10
+
 	wg.Add(num)
 
 	for i := 0; i < num; i++ {
