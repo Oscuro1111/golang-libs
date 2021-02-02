@@ -1,4 +1,4 @@
-package semophore
+package semaphore
 
 import (
 	"fmt"
@@ -120,10 +120,10 @@ func (sem *sSem) ReleaseResource(resource interface{}) (ok bool) {
 	return
 }
 
-type Semophore = sSem
+type Semaphore = sSem
 
-//NewSemopher  provide instance of new semeophore
-func NewSemophore(res []interface{}) *Semophore {
+//NewSemapher  provide instance of new semaphore
+func NewSemaphore(res []interface{}) *Semaphore {
 
 	//-------------------------------------------
 	NUM_OF_RESOURCES := int32(len(res))
@@ -134,7 +134,7 @@ func NewSemophore(res []interface{}) *Semophore {
 		Max: NUM_OF_RESOURCES,
 	}
 
-	resourcePool := &Semophore{
+	resourcePool := &Semaphore{
 		NumResources: NUM_OF_RESOURCES,
 		Pool:         pool,
 	}
