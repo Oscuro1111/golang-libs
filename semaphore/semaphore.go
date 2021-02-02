@@ -7,7 +7,7 @@ import (
 
 
 //Stack data structure not thread safe
-type Stack struct {
+type semStack struct {
 	Top int32
 	Stk []interface{}
 	Max int32
