@@ -1,21 +1,13 @@
 package semaphore
 
 import (
-	"fmt"
 	"sync"
 )
 
-//Sem is the semephore implementaion
-var (
-	log = fmt.Println
-)
 
-type Res struct {
-	data int
-}
 
 //Stack data structure not thread safe
-type semStack struct {
+type Stack struct {
 	Top int32
 	Stk []interface{}
 	Max int32
@@ -78,7 +70,6 @@ func (sem *sSem) GetResource() (resource interface{}) {
 		sem.lock.L.Lock()
 		//waiting
 		for sem.counter == 0 {
-			fmt.Println("waiting")
 			sem.lock.Wait()
 		}
 
