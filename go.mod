@@ -1,3 +1,3 @@
-module github.com/oscuro1111/golang-libs/v1.0
+module github.com/oscuro1111/golang-libs
 
 go 1.15
